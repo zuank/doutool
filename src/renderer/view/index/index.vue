@@ -38,11 +38,12 @@ export default {
         pagesize:20,
         type:3
       }).then(response => {
-        this.list = response.data.list
+        this.list = [...this.list, ...response.data.list]
       })
     },
     loadMore(){
-
+      this.page++;
+      this.getList()
     }
   }
 }
