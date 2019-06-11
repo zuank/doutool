@@ -1,67 +1,67 @@
 <template>
-  <div class="page-container">
-    <md-app md-waterfall md-mode="fixed">
-      <md-app-toolbar class="md-primary">
-        <span class="md-title">My Title</span>
-      </md-app-toolbar>
-
-      <md-app-drawer md-permanent="full">
-        <md-toolbar class="md-transparent" md-elevation="0">
-          Navigation
-        </md-toolbar>
-
-        <md-list>
-          <md-list-item>
-            <md-icon>move_to_inbox</md-icon>
-            <span class="md-list-item-text">Inbox</span>
-          </md-list-item>
-
-          <md-list-item>
-            <md-icon>send</md-icon>
-            <span class="md-list-item-text">Sent Mail</span>
-          </md-list-item>
-
-          <md-list-item>
-            <md-icon>delete</md-icon>
-            <span class="md-list-item-text">Trash</span>
-          </md-list-item>
-
-          <md-list-item>
-            <md-icon>error</md-icon>
-            <span class="md-list-item-text">Spam</span>
-          </md-list-item>
-        </md-list>
-      </md-app-drawer>
-
-      <md-app-content>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error quibusdam, non molestias et! Earum magnam, similique, quo recusandae placeat dicta asperiores modi sint ea repudiandae maxime? Quae non explicabo, neque.</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error quibusdam, non molestias et! Earum magnam, similique, quo recusandae placeat dicta asperiores modi sint ea repudiandae maxime? Quae non explicabo, neque.</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error quibusdam, non molestias et! Earum magnam, similique, quo recusandae placeat dicta asperiores modi sint ea repudiandae maxime? Quae non explicabo, neque.</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error quibusdam, non molestias et! Earum magnam, similique, quo recusandae placeat dicta asperiores modi sint ea repudiandae maxime? Quae non explicabo, neque.</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error quibusdam, non molestias et! Earum magnam, similique, quo recusandae placeat dicta asperiores modi sint ea repudiandae maxime? Quae non explicabo, neque.</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error quibusdam, non molestias et! Earum magnam, similique, quo recusandae placeat dicta asperiores modi sint ea repudiandae maxime? Quae non explicabo, neque.</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error quibusdam, non molestias et! Earum magnam, similique, quo recusandae placeat dicta asperiores modi sint ea repudiandae maxime? Quae non explicabo, neque.</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error quibusdam, non molestias et! Earum magnam, similique, quo recusandae placeat dicta asperiores modi sint ea repudiandae maxime? Quae non explicabo, neque.</p>
-      </md-app-content>
-    </md-app>
-  </div>
+  <el-row v-infinite-scroll="loadMore" :gutter="20">
+    <el-col :span="8" v-for="(item, index) in list" :key="index">
+      <el-card :body-style="{ padding: '0px' }">
+        <img :src="imgUrl+item.Picture" class="image">
+        <div style="padding: 14px;">
+          <p class="title">{{item.PName}}</p>
+          <div class="bottom clearfix">
+            <!-- <time class="time">{{ currentDate }}</time>
+            <el-button type="text" class="button">操作按钮</el-button> -->
+          </div>
+        </div>
+      </el-card>
+    </el-col>
+  </el-row>
 </template>
 
-<style lang="scss" scoped>
-  .md-app {
-    max-height: 100%;
-    border: 1px solid rgba(#000, .12);
-  }
-
-   // Demo purposes only
-  .md-drawer {
-    width: 230px;
-    max-width: calc(100vw - 125px);
-  }
-</style>
-
 <script>
+import {imgUrl} from '@/apiUrl'
 export default {
-  name: 'Waterfall'
+  name: 'List',
+  data(){
+    return {
+      page:3,
+      size:20,
+      list:[],
+      imgUrl:imgUrl
+    }
+  },
+  created(){
+    this.getList()
+  },
+  methods:{
+    getList(){
+      this.$http.post('http://api.toysmodel.cn/Shop/index.php?s=/App/get_product_list',{
+        area_id:1,
+        page:this.page,
+        pagesize:20,
+        type:3
+      }).then(response => {
+        this.list = response.data.list
+      })
+    },
+    loadMore(){
+
+    }
+  }
 }
 </script>
+
+<style lang="scss" scoped>
+.el-row {
+  height: calc(100vh - 100px);
+  overflow: auto;
+  min-width: 800px;
+}
+.image {
+  width: 100%;
+}
+.el-card {
+  margin-bottom: 10px;
+  .title {
+    font-size: 14px;
+    color: #333333;
+  }
+}
+</style>
