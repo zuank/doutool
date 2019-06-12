@@ -5,9 +5,9 @@
         <span style="float:right">
           DouTool
         </span>
-        <el-menu mode="horizontal">
-          <el-menu-item index="1">推荐</el-menu-item>
-        </el-menu>
+        <div class="nav">
+          <span class="active">推荐</span>
+        </div>
       </el-header>
       <el-main>
         <router-view></router-view>
@@ -34,18 +34,16 @@ body {
   top: 0;
   width: 100%;
 }
-.el-menu {
-  float: left;
-  background-color: transparent;
+.nav span {
+  color: #333;
+  font-size: 20px;
+  padding: 10px;
+  border-radius: 5px;
+  &.active {
+    background-color:tan
+  }
 }
-.el-menu--horizontal>.el-menu-item {
-  color: rgb(80, 7, 110);
-  font-size: 24px;
-}
-.el-menu--horizontal .el-menu-item:not(.is-disabled):hover {
-  color: rgb(80, 7, 10);
-  background-color: transparent;
-}
+
 .el-main {
   padding: 80px 20px 20px 20px;
 }
