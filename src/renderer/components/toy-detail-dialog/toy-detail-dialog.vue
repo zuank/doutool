@@ -1,9 +1,9 @@
 <template>
     <el-dialog
-        title="玩具详情"
         :visible.sync="dialogVisible"
         width="600px"
     >
+        <span slot="title">玩具详情111</span>
         <iframe :src="src" frameborder="0"></iframe>
 
         <el-button @click="down">一键下载素材</el-button>
