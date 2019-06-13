@@ -1,11 +1,13 @@
 <template>
     <div id="thing-list">
         <el-header>
-            <span style="float:right">
-                DouTool
-            </span>
             <div class="nav">
                 <span v-for="(item,index) in typeList" :key="index" :class="{ active: type === item.value }" @click="getList(item.value)">{{item.name}}</span>
+                <el-input v-model="QueryString" clearable placeholder="请输入商品名称或编号" @keydown.enter.native="search">
+                    <template slot="append">
+                        <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
+                    </template>
+                </el-input>
             </div>
         </el-header>
         <el-main>
@@ -25,7 +27,7 @@
                     </el-col>
                 </div>
                 <p v-if="loading" class="list-message">加载中...</p>
-                <p v-if="noMore" class="list-message">没有更多了</p>
+                <p v-else-if="noMore" class="list-message">没有更多了</p>
             </el-row>
         </el-main>
 
@@ -62,7 +64,8 @@ export default {
             loading: false,
             noMore: false,
             info: {},
-            dialogVisible: false
+            dialogVisible: false,
+            QueryString: ''
         };
     },
     created() {
@@ -77,10 +80,20 @@ export default {
         }
     },
     methods: {
+        // 搜索框搜索
+        search() {
+            this.noMore = false;
+            this.type = null;
+            this.page = 1;
+            this.list = [];
+            this.searchList();
+        },
+        // 展示详情
         showInfo(item) {
             this.info = item;
             this.dialogVisible = true;
         },
+        // 初始化排版
         initPic() {
             const bodyWidth = document.body.clientWidth;
             if (bodyWidth <= 300) {
@@ -100,13 +113,31 @@ export default {
                 this.span = 4;
             }
         },
+        // 搜索列表
+        searchList() {
+            this.loading = true;
+            this.$http.post('http://api.toysmodel.cn/Shop/index.php?s=/App/get_product_list', {
+                area_id: 1,
+                page: this.page,
+                pagesize: 20,
+                QueryString: this.QueryString
+            }).then(response => {
+                this.loading = false;
+                if (response.data.list) {
+                    this.list = [...this.list, ...response.data.list];
+                } else {
+                    this.noMore = true;
+                }
+            });
+        },
+        // 按分类获取列表
         getList(type) {
             if (type) {
                 this.type = type;
+                this.noMore = false;
                 this.list = [];
                 this.page = 1;
             }
-
             this.loading = true;
             this.$http.post('http://api.toysmodel.cn/Shop/index.php?s=/App/get_product_list', {
                 area_id: 1,
@@ -115,12 +146,20 @@ export default {
                 type: this.type
             }).then(response => {
                 this.loading = false;
-                this.list = [...this.list, ...response.data.list];
+                if (response.data) {
+                    this.list = [...this.list, ...response.data.list];
+                }
+
             });
         },
+        // 懒加载
         loadMore() {
             this.page++;
-            this.getList();
+            if (this.type === null) {
+                this.searchList();
+            } else {
+                this.getList();
+            }
         }
     }
 };
@@ -135,14 +174,21 @@ export default {
   top: 0;
   width: 100%;
 }
-.nav span {
-  color: #333;
-  font-size: 20px;
-  padding: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  &.active {
-    background-color:tan
+.nav {
+  .el-input {
+    width: 300px;
+    float: right;
+    margin: 10px
+  }
+  span {
+    color: #333;
+    font-size: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    &.active {
+      background-color:tan
+    }
   }
 }
 .el-main {
@@ -182,5 +228,6 @@ export default {
 .list-message {
   text-align: center;
   font-size: 20px;
+  line-height: 40px;
 }
 </style>
