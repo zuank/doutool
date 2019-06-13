@@ -18,9 +18,10 @@
                             <img :src="imgUrl + item.Picture" class="image">
                             <div style="padding: 14px;">
                                 <p class="title">{{item.PName}}</p>
+                                <p class="time">SN:{{item.ToySn}}</p>
                                 <div class="bottom clearfix">
-                                    <time class="time">SN:{{item.ToySn}}</time>
-                                    <el-button type="text" class="button" @click="showInfo(item)">查看</el-button>
+                                    <el-button type="text" class="button" @click="showInfo(item)">详情</el-button>
+                                    <el-button type="text" class="button" @click="showPic(item)">高清素材</el-button>
                                 </div>
                             </div>
                         </el-card>
@@ -30,21 +31,21 @@
                 <p v-else-if="noMore" class="list-message">没有更多了</p>
             </el-row>
         </el-main>
-
-        <el-dialog
-            title="玩具详情"
-            :visible.sync="dialogVisible"
-            width="600px"
-        >
-            <iframe :src="baseUrl + info.html" frameborder="0"></iframe>
-        </el-dialog>
+        <toy-detail-dialog ref="toyDetailDialog" :src="baseUrl + info.html" />
+        <toy-pic-dialog ref="toyPicDialog" />
     </div>
 </template>
 
 <script>
 import { imgUrl, baseUrl } from '@/apiUrl';
+import toyDetailDialog from '../../components/toy-detail-dialog/toy-detail-dialog';
+import toyPicDialog from '../../components/toy-pic-dialog/toy-pic-dialog';
 export default {
     name: 'List',
+    components: {
+        toyDetailDialog,
+        toyPicDialog
+    },
     data() {
         return {
             typeList: [
@@ -64,8 +65,9 @@ export default {
             loading: false,
             noMore: false,
             info: {},
-            dialogVisible: false,
-            QueryString: ''
+            toyDetailDialogVisible: false,
+            toyPicDialogVisible: false,
+            QueryString: '',
         };
     },
     created() {
@@ -88,11 +90,14 @@ export default {
             this.list = [];
             this.searchList();
         },
+        showPic(item) {
+            this.$refs['toyPicDialog'].ToySn = item.ToySn;
+            this.$refs['toyPicDialog'].searchPic();
+        },
         // 展示详情
         showInfo(item) {
             this.info = item;
-            this.dialogVisible = true;
-            this.searchPic();
+            this.$refs['toyDetailDialog'].dialogVisible = true;
         },
         // 初始化排版
         initPic() {
@@ -115,6 +120,7 @@ export default {
             }
         },
         // http://api.toysmodel.cn/toyN1.php?function=PicQuerySumDB&v1=+and+((AreaID%3D1)+or+(AreaID%3D3))+and+(PID%3D0)+and+(CONCAT(PName%2CTag%2CToySn%2CSName)+like+'%25%25')+and+(CONCAT(PName%2CTag%2CToySn%2CSName)+like+'%251605254002%25')+Order+by+ID+desc++LIMIT+0%2C21
+        // http://api.toysmodel.cn/toyN1.php?function=PicQueryDB&v1=+and+((PID=380394)+or+(ID=380394))+Order+by+ID+DESC+LIMIT+30,31
         // 搜索列表
         searchList() {
             this.loading = true;
@@ -130,12 +136,6 @@ export default {
                 } else {
                     this.noMore = true;
                 }
-            });
-        },
-        searchPic() {
-            this.$http.get(`http://api.toysmodel.cn/toyN1.php?function=PicQuerySumDB&v1=${encodeURIComponent("and ((AreaID=1) or (AreaID=3)) and (PID=0) and (CONCAT(PName,Tag,ToySn,SName) like '%%') and (CONCAT(PName,Tag,ToySn,SName) like '%" + this.info.ToySn + "%') Order by ID desc  LIMIT 0,21")}`).then(response => {
-
-
             });
         },
         // 按分类获取列表
@@ -202,21 +202,15 @@ export default {
 .el-main {
   padding: 80px 20px 20px 20px;
 }
-.el-dialog {
-  iframe {
-    width: 100%;
-    height: 600px;
-  }
-}
 .el-row {
   height: calc(100vh - 100px);
   overflow: auto;
 }
-.image {
-  width: 100%;
-}
 .el-card {
   margin-bottom: 10px;
+  .image {
+    width: 100%;
+  }
   .title {
     font-size: 14px;
     color: #333333;
@@ -225,12 +219,6 @@ export default {
     text-overflow:ellipsis;
     padding: 0;
     margin: 0;
-  }
-  .bottom {
-    line-height: 40px;
-    .button {
-      float: right;
-    }
   }
 }
 .list-message {
