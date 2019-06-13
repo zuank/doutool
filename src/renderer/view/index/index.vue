@@ -21,7 +21,6 @@
                                 <p class="time">SN:{{item.ToySn}}</p>
                                 <div class="bottom clearfix">
                                     <el-button type="text" class="button" @click="showInfo(item)">详情</el-button>
-                                    <el-button type="text" class="button" @click="showPic(item)">高清素材</el-button>
                                 </div>
                             </div>
                         </el-card>
