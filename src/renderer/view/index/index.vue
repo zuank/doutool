@@ -3,7 +3,7 @@
         <el-header>
             <div class="nav">
                 <span v-for="(item,index) in typeList" :key="index" :class="{ active: type === item.value }" @click="getList(item.value)">{{item.name}}</span>
-                <el-input v-model="QueryString" clearable placeholder="请输入商品名称或编号" @keydown.enter.native="search">
+                <el-input v-model="QueryString" clearable placeholder="请输入商品名称或供货商" @keydown.enter.native="search">
                     <template slot="append">
                         <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
                     </template>
@@ -92,6 +92,7 @@ export default {
         showInfo(item) {
             this.info = item;
             this.dialogVisible = true;
+            this.searchPic();
         },
         // 初始化排版
         initPic() {
@@ -113,6 +114,7 @@ export default {
                 this.span = 4;
             }
         },
+        // http://api.toysmodel.cn/toyN1.php?function=PicQuerySumDB&v1=+and+((AreaID%3D1)+or+(AreaID%3D3))+and+(PID%3D0)+and+(CONCAT(PName%2CTag%2CToySn%2CSName)+like+'%25%25')+and+(CONCAT(PName%2CTag%2CToySn%2CSName)+like+'%251605254002%25')+Order+by+ID+desc++LIMIT+0%2C21
         // 搜索列表
         searchList() {
             this.loading = true;
@@ -128,6 +130,12 @@ export default {
                 } else {
                     this.noMore = true;
                 }
+            });
+        },
+        searchPic() {
+            this.$http.get(`http://api.toysmodel.cn/toyN1.php?function=PicQuerySumDB&v1=${encodeURIComponent("and ((AreaID=1) or (AreaID=3)) and (PID=0) and (CONCAT(PName,Tag,ToySn,SName) like '%%') and (CONCAT(PName,Tag,ToySn,SName) like '%" + this.info.ToySn + "%') Order by ID desc  LIMIT 0,21")}`).then(response => {
+
+
             });
         },
         // 按分类获取列表
