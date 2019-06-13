@@ -21,9 +21,6 @@ export default {
             dialogVisible: false
         };
     },
-    created() {
-        this.searchPic();
-    },
     methods: {
         async searchPic() {
             this.list = [];

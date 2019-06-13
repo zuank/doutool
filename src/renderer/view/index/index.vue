@@ -91,13 +91,14 @@ export default {
             this.searchList();
         },
         showPic(item) {
-            this.$refs['toyPicDialog'].ToySn = item.ToySn;
-            this.$refs['toyPicDialog'].searchPic();
+
         },
         // 展示详情
         showInfo(item) {
             this.info = item;
             this.$refs['toyDetailDialog'].dialogVisible = true;
+            this.$refs['toyDetailDialog'].ToySn = item.ToySn;
+            this.$refs['toyDetailDialog'].searchPic();
         },
         // 初始化排版
         initPic() {
