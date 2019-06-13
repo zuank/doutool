@@ -9,28 +9,30 @@
             </div>
         </el-header>
         <el-main>
-            <el-row v-infinite-scroll="loadMore" :gutter="20">
-                <el-col v-for="(item, index) in list" :key="index" :span="span">
-                    <el-card :body-style="{ padding: '0px' }">
-                        <img :src="imgUrl + item.Picture" class="image">
-                        <div style="padding: 14px;">
-                            <p class="title">{{item.PName}}</p>
-                            <div class="bottom clearfix">
-                                <time class="time">SN:{{item.ToySn}}</time>
-                                <el-button type="text" class="button" @click="showInfo(item)">查看</el-button>
+            <el-row v-infinite-scroll="loadMore" infinite-scroll-disabled="disabled" :gutter="20">
+                <div>
+                    <el-col v-for="(item, index) in list" :key="index" :span="span">
+                        <el-card :body-style="{ padding: '0px' }">
+                            <img :src="imgUrl + item.Picture" class="image">
+                            <div style="padding: 14px;">
+                                <p class="title">{{item.PName}}</p>
+                                <div class="bottom clearfix">
+                                    <time class="time">SN:{{item.ToySn}}</time>
+                                    <el-button type="text" class="button" @click="showInfo(item)">查看</el-button>
+                                </div>
                             </div>
-                        </div>
-                    </el-card>
-                </el-col>
+                        </el-card>
+                    </el-col>
+                </div>
+                <p v-if="loading" class="list-message">加载中...</p>
+                <p v-if="noMore" class="list-message">没有更多了</p>
             </el-row>
-            <p v-if="loading" class="list-message">加载中...</p>
-            <p v-if="noMore" class="list-message">没有更多了</p>
         </el-main>
 
         <el-dialog
             title="玩具详情"
             :visible.sync="dialogVisible"
-            width="600"
+            width="600px"
         >
             <iframe :src="baseUrl + info.html" frameborder="0"></iframe>
         </el-dialog>
@@ -68,6 +70,11 @@ export default {
     },
     mounted() {
         this.initPic();
+    },
+    computed: {
+        disabled() {
+            return this.loading || this.noMore;
+        }
     },
     methods: {
         showInfo(item) {
