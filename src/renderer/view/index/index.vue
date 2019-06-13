@@ -140,6 +140,7 @@ export default {
   font-size: 20px;
   padding: 10px;
   border-radius: 5px;
+  cursor: pointer;
   &.active {
     background-color:tan
   }
