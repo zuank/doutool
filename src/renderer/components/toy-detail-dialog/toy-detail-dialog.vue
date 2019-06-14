@@ -1,12 +1,16 @@
 <template>
     <el-dialog
         :visible.sync="dialogVisible"
+        align="center"
         width="600px"
     >
-        <span slot="title">玩具详情111</span>
+        <div slot="title">
+            <div class="header">
+                玩具详情
+                <el-button class="down" type="success" @click="down">一键下载素材</el-button>
+            </div>
+        </div>
         <iframe :src="src" frameborder="0"></iframe>
-
-        <el-button @click="down">一键下载素材</el-button>
     </el-dialog>
 </template>
 <script>
@@ -88,6 +92,15 @@ export default {
   iframe {
     width: 100%;
     height: 600px;
+  }
+  .header {
+    line-height: 42px;
+    position: relative;
+    .down{
+      position: absolute;
+      top: 0;
+      right: 30px;
+    }
   }
 }
 </style>
