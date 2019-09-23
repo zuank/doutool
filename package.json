@@ -1,7 +1,7 @@
 {
   "name": "doutool",
-  "version": "0.0.1",
-  "author": "王越豪 <wangyuehao@jiangduoduo.com>",
+  "version": "1.0.1",
+  "author": "zuank@icloud.com",
   "description": "An electron-vue project",
   "license": "null",
   "main": "./dist/electron/main.js",
@@ -17,14 +17,20 @@
     "postinstall": ""
   },
   "build": {
-    "productName": "doutool",
+    "productName": "玩麻豆桌面工具",
     "appId": "com.example.yourapp",
+    "compression": "store",
     "directories": {
       "output": "build"
     },
     "files": [
       "dist/electron/**/*"
     ],
+    "nsis":{
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true
+    },
     "dmg": {
       "contents": [
         {
