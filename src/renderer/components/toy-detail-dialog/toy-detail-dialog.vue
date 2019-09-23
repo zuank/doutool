@@ -44,7 +44,7 @@ export default {
         down() {
             console.log(fs);
             const _this = this;
-            fs.mkdir('./download/' + _this.ToySn, function(error) {
+            fs.mkdir('download/' + _this.ToySn, function(error) {
                 if (error) {
                     console.log(error);
                     return false;
@@ -104,4 +104,3 @@ export default {
   }
 }
 </style>
-
