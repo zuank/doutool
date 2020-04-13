@@ -14,7 +14,7 @@
     </el-dialog>
 </template>
 <script>
-import fs, { truncate } from 'fs';
+import fs from 'fs';
 import http from 'http';
 import { imgUrl } from '@/apiUrl';
 export default {
@@ -49,11 +49,10 @@ export default {
                     console.log(error);
                 }
                 console.log('创建目录成功');
-                console.log(this.list);
-                this.list.forEach((item, index) => {
+                this.list.forEach(async (item, index) => {
                     let _imgurl = `${imgUrl}${item.Path}/${item.FName}`;
                     console.log(_imgurl);
-                    this.saveImg(_imgurl, item.FName);
+                    await this.saveImg(_imgurl, item.FName);
                 });
             });
         },

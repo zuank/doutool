@@ -12,22 +12,20 @@
         </el-header>
         <el-main>
             <el-row v-infinite-scroll="loadMore" infinite-scroll-disabled="disabled" :gutter="20">
-                <div>
-                    <el-col v-for="(item, index) in list" :key="index" :span="span">
-                        <el-card :body-style="{ padding: '0px' }">
-                            <img :src="imgUrl + item.Picture" class="image">
-                            <div style="padding: 14px;">
-                                <p class="title">{{item.PName}}</p>
-                                <p class="time">SN:{{item.ToySn}}</p>
-                                <div class="bottom clearfix">
-                                    <el-button type="text" class="button" @click="showInfo(item)">详情</el-button>
-                                </div>
+                <el-col v-for="(item, index) in list" :key="index" :span="span">
+                    <el-card :body-style="{ padding: '0px' }">
+                        <img :src="imgUrl + item.Picture" class="image">
+                        <div style="padding: 14px;">
+                            <p class="title">{{item.PName}}</p>
+                            <p class="time">SN:{{item.ToySn}}</p>
+                            <div class="bottom clearfix">
+                                <el-button type="text" class="button" @click="showInfo(item)">详情</el-button>
                             </div>
-                        </el-card>
-                    </el-col>
-                </div>
-                <p v-if="loading" class="list-message">加载中...</p>
-                <p v-else-if="noMore" class="list-message">没有更多了</p>
+                        </div>
+                    </el-card>
+                </el-col>
+                <p v-if="loading" class="list-message el-col el-col-24">加载中...</p>
+                <p v-else-if="noMore" class="list-message el-col el-col-24">没有更多了</p>
             </el-row>
         </el-main>
         <toy-detail-dialog ref="toyDetailDialog" :src="baseUrl + info.html" />
