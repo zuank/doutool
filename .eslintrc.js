@@ -8,7 +8,7 @@ module.exports = {
         // 设置 js 的解析器为 babel-eslint
         // https://github.com/mysticatea/vue-eslint-parser#-options
         parser: 'babel-eslint',
-        ecmaVersion: 2017,
+        ecmaVersion: 2020,
         sourceType: 'module',
         ecmaFeatures: {
             experimentalObjectRestSpread: true,
