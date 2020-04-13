@@ -38,6 +38,7 @@ module.exports = {
         BRAND_CONFIG: false
     },
     rules: {
+        "function-call-argument-newline": ['off', 'consistent'], 
         "vue/html-indent": ["error", 4, {
             "attribute": 1,
             "closeBracket": 0,
