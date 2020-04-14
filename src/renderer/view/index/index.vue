@@ -53,7 +53,7 @@ export default {
                 { name: '全部', value: 5 },
             ],
             type: 1,
-            page: 1,
+            page: 0,
             size: 20,
             list: [],
             imgUrl: imgUrl,
@@ -83,7 +83,7 @@ export default {
         search() {
             this.noMore = false;
             this.type = null;
-            this.page = 1;
+            this.page = 0;
             this.list = [];
             this.searchList();
         },
@@ -142,7 +142,7 @@ export default {
                 this.type = type;
                 this.noMore = false;
                 this.list = [];
-                this.page = 1;
+                this.page = 0;
             }
             this.loading = true;
             this.$http.post('http://api.toysmodel.cn/Shop/index.php?s=/App/get_product_list', {
