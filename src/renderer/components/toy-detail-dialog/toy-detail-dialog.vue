@@ -10,7 +10,9 @@
                 <el-button :disabled="!showDownload" class="down" type="success" @click="down">一键下载素材</el-button>
             </div>
         </div>
-        <iframe :src="src" frameborder="0"></iframe>
+        <div v-loading="loading">
+            <iframe :src="src" frameborder="0" @load="load"></iframe>
+        </div>
     </el-dialog>
 </template>
 <script>
@@ -23,13 +25,19 @@ export default {
             default: ''
         }
     },
+    watch: {
+        'src': function() {
+            this.loading = true;
+        }
+    },
     data() {
         return {
             dialogVisible: false,
             showDownload: false,
             PID: '',
             ToySn: '',
-            list: []
+            list: [],
+            loading: true
         };
     },
     created() {
@@ -42,6 +50,9 @@ export default {
         });
     },
     methods: {
+        load() {
+            this.loading = false;
+        },
         down() {
             console.log(fs);
             fs.mkdir('download/' + this.ToySn, (error) => {
