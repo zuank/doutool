@@ -2,7 +2,7 @@
     <el-dialog
         :visible.sync="dialogVisible"
         align="center"
-        width="600px"
+        width="60%"
     >
         <div slot="title">
             <div class="header">
@@ -11,7 +11,7 @@
             </div>
         </div>
         <div v-loading="loading">
-            <iframe :src="src" frameborder="0" @load="load"></iframe>
+            <iframe id="iframe" :src="src" frameborder="0" @load="load"></iframe>
         </div>
     </el-dialog>
 </template>
@@ -19,6 +19,7 @@
 import fs from 'fs';
 import http from 'http';
 import { imgUrl } from '@/apiUrl';
+import $ from 'jquery';
 export default {
     props: {
         src: {
@@ -50,8 +51,15 @@ export default {
         });
     },
     methods: {
-        load() {
+        load(e) {
             this.loading = false;
+            // 隐藏手机号码和QQ号
+            const content = $(document.getElementById('iframe').contentWindow.document.body).find('.span_left');
+            content.children().each((index, item) => {
+                if ($(item).text().indexOf('电话') !== -1 || $(item).text().indexOf('QQ') !== -1) {
+                    $(item).remove();
+                }
+            });
         },
         down() {
             console.log(fs);

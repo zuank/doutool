@@ -18,9 +18,9 @@
                         <div style="padding: 14px;">
                             <p class="title">{{item.PName}}</p>
                             <p class="time">SN:{{item.ToySn}}</p>
-                            <!-- <div class="bottom clearfix">
-                                <el-button type="text" class="button" @click="showInfo(item)">详情</el-button>
-                            </div> -->
+                            <div class="bottom clearfix">
+                                <el-button type="text" class="button" @click="showInfo(item)">查看详情</el-button>
+                            </div>
                         </div>
                     </el-card>
                 </el-col>
@@ -86,9 +86,6 @@ export default {
             this.page = 0;
             this.list = [];
             this.searchList();
-        },
-        showPic(item) {
-
         },
         // 展示详情
         showInfo(item) {
