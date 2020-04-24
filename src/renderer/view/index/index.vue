@@ -14,13 +14,13 @@
             <el-row v-infinite-scroll="loadMore" infinite-scroll-disabled="disabled" :gutter="20">
                 <el-col v-for="(item, index) in list" :key="index" :span="span">
                     <el-card :body-style="{ padding: '0px' }">
-                        <img :src="imgUrl + item.Picture" class="image">
+                        <div class="image" :style="{ 'background-image': `url(${imgUrl + item.Picture})` }"></div>
                         <div style="padding: 14px;">
                             <p class="title">{{item.PName}}</p>
                             <p class="time">SN:{{item.ToySn}}</p>
-                            <div class="bottom clearfix">
+                            <!-- <div class="bottom clearfix">
                                 <el-button type="text" class="button" @click="showInfo(item)">详情</el-button>
-                            </div>
+                            </div> -->
                         </div>
                     </el-card>
                 </el-col>
@@ -58,7 +58,7 @@ export default {
             list: [],
             imgUrl: imgUrl,
             baseUrl: baseUrl,
-            span: 8,
+            span: 12,
             loading: false,
             noMore: false,
             info: {},
@@ -114,7 +114,7 @@ export default {
             } else if (bodyWidth <= 1200) {
                 this.span = 6;
             } else {
-                this.span = 4;
+                this.span = 6;
             }
         },
         // http://api.toysmodel.cn/toyN1.php?function=PicQuerySumDB&v1=+and+((AreaID%3D1)+or+(AreaID%3D3))+and+(PID%3D0)+and+(CONCAT(PName%2CTag%2CToySn%2CSName)+like+'%25%25')+and+(CONCAT(PName%2CTag%2CToySn%2CSName)+like+'%251605254002%25')+Order+by+ID+desc++LIMIT+0%2C21
@@ -208,6 +208,9 @@ export default {
   margin-bottom: 10px;
   .image {
     width: 100%;
+    padding: 50% 0;
+    background-repeat: no-repeat;
+    background-size: contain;
   }
   .title {
     font-size: 14px;
