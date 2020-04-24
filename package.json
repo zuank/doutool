@@ -7,6 +7,7 @@
   "main": "./dist/electron/main.js",
   "scripts": {
     "build": "node .electron-vue/build.js && electron-builder",
+    "build:mac": "node .electron-vue/build.js && electron-builder --platform=mac ",
     "build:dir": "node .electron-vue/build.js && electron-builder --dir",
     "build:clean": "cross-env BUILD_TARGET=clean node .electron-vue/build.js",
     "build:web": "cross-env BUILD_TARGET=web node .electron-vue/build.js",
@@ -17,7 +18,7 @@
     "postinstall": ""
   },
   "build": {
-    "productName": "玩麻豆桌面工具",
+    "productName": "DBB代购",
     "appId": "com.example.yourapp",
     "compression": "store",
     "directories": {
