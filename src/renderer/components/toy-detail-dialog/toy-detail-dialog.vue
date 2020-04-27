@@ -7,7 +7,8 @@
         <div slot="title">
             <div class="header">
                 玩具详情
-                <el-button :disabled="!showDownload" class="down" type="success" @click="down">一键下载素材</el-button>
+                <!-- 一键下载这个功能不好用 图片像素太低 -->
+                <!-- <el-button :disabled="!showDownload" class="down" type="success" @click="down">一键下载素材</el-button> -->
             </div>
         </div>
         <div v-loading="loading">
