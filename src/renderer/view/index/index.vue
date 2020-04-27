@@ -45,6 +45,7 @@ export default {
     },
     data() {
         return {
+            adList: [],
             typeList: [
                 { name: '推荐', value: 1 },
                 { name: '新款', value: 2 },
@@ -59,7 +60,7 @@ export default {
             imgUrl: imgUrl,
             baseUrl: baseUrl,
             span: 12,
-            loading: false,
+            loading: true,
             noMore: false,
             info: {},
             toyDetailDialogVisible: false,
@@ -67,8 +68,10 @@ export default {
             QueryString: '',
         };
     },
-    created() {
-        this.getList();
+    async created() {
+        const adResult = await this.getADList();
+        this.adList = adResult.data.list;
+        await this.getList(1);
     },
     mounted() {
         this.initPic();
@@ -117,21 +120,30 @@ export default {
         // http://api.toysmodel.cn/toyN1.php?function=PicQuerySumDB&v1=+and+((AreaID%3D1)+or+(AreaID%3D3))+and+(PID%3D0)+and+(CONCAT(PName%2CTag%2CToySn%2CSName)+like+'%25%25')+and+(CONCAT(PName%2CTag%2CToySn%2CSName)+like+'%251605254002%25')+Order+by+ID+desc++LIMIT+0%2C21
         // http://api.toysmodel.cn/toyN1.php?function=PicQueryDB&v1=+and+((PID=380394)+or+(ID=380394))+Order+by+ID+DESC+LIMIT+30,31
         // 搜索列表
-        searchList() {
+        searchList(value) {
             this.loading = true;
             this.$http.post('http://api.toysmodel.cn/Shop/index.php?s=/App/get_product_list', {
                 area_id: 1,
                 page: this.page,
                 pagesize: 20,
-                QueryString: this.QueryString
+                QueryString: value || this.QueryString
             }).then(response => {
                 this.loading = false;
+                this.page++;
                 if (response.data.list) {
                     this.list = [...this.list, ...response.data.list];
                 } else {
                     this.noMore = true;
                 }
             });
+        },
+        getADList(value) {
+            return this.$http.post('http://api.toysmodel.cn/Shop/index.php?s=/App/get_product_list', {
+                area_id: 1,
+                page: this.page,
+                pagesize: 20,
+                QueryString: '好孩子'
+            }).then(resolve => resolve);
         },
         // 按分类获取列表
         getList(type) {
@@ -150,14 +162,14 @@ export default {
             }).then(response => {
                 this.loading = false;
                 if (response.data) {
-                    this.list = [...this.list, ...response.data.list];
+                    // 将adList只放在推荐栏目首位
+                    this.list = [...(this.page == 0 && this.type == 1 ? this.adList : []), ...this.list, ...response.data.list];
                 }
-
+                this.page++;
             });
         },
         // 懒加载
         loadMore() {
-            this.page++;
             if (this.type === null) {
                 this.searchList();
             } else {

@@ -62,7 +62,6 @@ export default {
             });
         },
         down() {
-            console.log(fs);
             fs.mkdir('download/' + this.ToySn, (error) => {
                 if (error) {
                     console.log(error);
