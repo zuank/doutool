@@ -2,7 +2,7 @@
   "name": "doutool",
   "version": "1.0.1",
   "author": "zuank@icloud.com",
-  "description": "An electron-vue project",
+  "description": "毛绒玩具代购平台",
   "license": "null",
   "main": "./dist/electron/main.js",
   "scripts": {
