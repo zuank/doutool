@@ -14,7 +14,7 @@
             <el-row v-infinite-scroll="loadMore" infinite-scroll-disabled="disabled" :gutter="20">
                 <el-col v-for="(item, index) in list" :key="index" :span="span">
                     <el-card :body-style="{ padding: '0px' }">
-                        <div class="image" :style="{ 'background-image': `url(${imgUrl + item.Picture})` }"></div>
+                        <div class="image" :style="{ 'background-image': `url(${item.Picture})` }"></div>
                         <div style="padding: 14px;">
                             <p class="title">{{item.PName}}</p>
                             <p class="time">SN:{{item.ToySn}}</p>
@@ -28,7 +28,7 @@
                 <p v-else-if="noMore" class="list-message el-col el-col-24">没有更多了</p>
             </el-row>
         </el-main>
-        <toy-detail-dialog ref="toyDetailDialog" :src="baseUrl + info.html" />
+        <toy-detail-dialog ref="toyDetailDialog" :src="info.url" />
         <toy-pic-dialog ref="toyPicDialog" />
     </div>
 </template>
@@ -54,7 +54,7 @@ export default {
                 { name: '全部', value: 5 },
             ],
             type: 1,
-            page: 0,
+            page: 1,
             size: 20,
             list: [],
             imgUrl: imgUrl,
@@ -70,7 +70,8 @@ export default {
     },
     async created() {
         const adResult = await this.getADList();
-        this.adList = adResult.data.list;
+        this.adList = adResult.data.data;
+        console.log(this.adList);
         await this.getList(1);
     },
     mounted() {
@@ -86,7 +87,7 @@ export default {
         search() {
             this.noMore = false;
             this.type = null;
-            this.page = 0;
+            this.page = 1;
             this.list = [];
             this.searchList();
         },
@@ -122,27 +123,27 @@ export default {
         // 搜索列表
         searchList(value) {
             this.loading = true;
-            this.$http.post('http://api.toysmodel.cn/Shop/index.php?s=/App/get_product_list', {
+            this.$http.post('http://apicenter.toysmodel.cn/api/5e241452c81d2', {
                 area_id: 1,
                 page: this.page,
                 pagesize: 20,
-                QueryString: value || this.QueryString
+                search: value || this.QueryString
             }).then(response => {
                 this.loading = false;
                 this.page++;
-                if (response.data.list) {
-                    this.list = [...this.list, ...response.data.list];
+                if (response.data.code == 1) {
+                    this.list = [...this.list, ...response.data.data];
                 } else {
                     this.noMore = true;
                 }
             });
         },
         getADList(value) {
-            return this.$http.post('http://api.toysmodel.cn/Shop/index.php?s=/App/get_product_list', {
+            return this.$http.post('http://apicenter.toysmodel.cn/api/5e241452c81d2', {
                 area_id: 1,
-                page: this.page,
+                page: 1,
                 pagesize: 20,
-                QueryString: '好孩子'
+                search: '好孩子'
             }).then(resolve => resolve);
         },
         // 按分类获取列表
@@ -151,20 +152,22 @@ export default {
                 this.type = type;
                 this.noMore = false;
                 this.list = [];
-                this.page = 0;
+                this.page = 1;
             }
             this.loading = true;
-            this.$http.post('http://api.toysmodel.cn/Shop/index.php?s=/App/get_product_list', {
+            this.$http.post('http://apicenter.toysmodel.cn/api/5e241452c81d2', {
                 area_id: 1,
                 page: this.page,
                 pagesize: 20,
                 type: this.type
             }).then(response => {
                 this.loading = false;
-                if (response.data) {
+                console.log(response);
+                if (response.data.code == 1) {
                     // 将adList只放在推荐栏目首位
-                    this.list = [...(this.page == 0 && this.type == 1 ? this.adList : []), ...this.list, ...response.data.list];
+                    this.list = [...(this.page == 1 && this.type == 1 ? this.adList : []), ...this.list, ...response.data.data];
                 }
+                console.log(this.list);
                 this.page++;
             });
         },
