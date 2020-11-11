@@ -34,153 +34,150 @@
 </template>
 
 <script>
-import { imgUrl, baseUrl } from '@/apiUrl';
-import toyDetailDialog from '../../components/toy-detail-dialog/toy-detail-dialog';
-import toyPicDialog from '../../components/toy-pic-dialog/toy-pic-dialog';
+import { imgUrl, baseUrl } from '@/apiUrl'
+import toyDetailDialog from '../../components/toy-detail-dialog/toy-detail-dialog'
+import toyPicDialog from '../../components/toy-pic-dialog/toy-pic-dialog'
 export default {
-    name: 'List',
-    components: {
-        toyDetailDialog,
-        toyPicDialog
-    },
-    data() {
-        return {
-            adList: [],
-            typeList: [
-                { name: '推荐', value: 1 },
-                { name: '新款', value: 2 },
-                { name: '版权', value: 3 },
-                { name: '品牌', value: 4 },
-                { name: '全部', value: 5 },
-            ],
-            type: 1,
-            page: 1,
-            size: 20,
-            list: [],
-            imgUrl: imgUrl,
-            baseUrl: baseUrl,
-            span: 12,
-            loading: true,
-            noMore: false,
-            info: {},
-            toyDetailDialogVisible: false,
-            toyPicDialogVisible: false,
-            QueryString: '',
-        };
-    },
-    async created() {
-        const adResult = await this.getADList();
-        this.adList = adResult.data.data;
-        console.log(this.adList);
-        await this.getList(1);
-    },
-    mounted() {
-        this.initPic();
-    },
-    computed: {
-        disabled() {
-            return this.loading || this.noMore;
-        }
-    },
-    methods: {
-        // 搜索框搜索
-        search() {
-            this.noMore = false;
-            this.type = null;
-            this.page = 1;
-            this.list = [];
-            this.searchList();
-        },
-        // 展示详情
-        showInfo(item) {
-            this.info = item;
-            this.$refs['toyDetailDialog'].dialogVisible = true;
-            this.$refs['toyDetailDialog'].ToySn = item.ToySn;
-            this.$refs['toyDetailDialog'].searchPic();
-        },
-        // 初始化排版
-        initPic() {
-            const bodyWidth = document.body.clientWidth;
-            if (bodyWidth <= 300) {
-                this.span = 24;
-            }
-            else if (bodyWidth <= 600) {
-                this.span = 12;
-            }
-            else if (bodyWidth <= 830) {
-                this.span = 8;
-            }
-            else if (bodyWidth <= 830) {
-                this.span = 8;
-            } else if (bodyWidth <= 1200) {
-                this.span = 6;
-            } else {
-                this.span = 6;
-            }
-        },
-        // http://api.toysmodel.cn/toyN1.php?function=PicQuerySumDB&v1=+and+((AreaID%3D1)+or+(AreaID%3D3))+and+(PID%3D0)+and+(CONCAT(PName%2CTag%2CToySn%2CSName)+like+'%25%25')+and+(CONCAT(PName%2CTag%2CToySn%2CSName)+like+'%251605254002%25')+Order+by+ID+desc++LIMIT+0%2C21
-        // http://api.toysmodel.cn/toyN1.php?function=PicQueryDB&v1=+and+((PID=380394)+or+(ID=380394))+Order+by+ID+DESC+LIMIT+30,31
-        // 搜索列表
-        searchList(value) {
-            this.loading = true;
-            this.$http.post('http://apicenter.toysmodel.cn/api/5e241452c81d2', {
-                area_id: 1,
-                page: this.page,
-                pagesize: 20,
-                search: value || this.QueryString
-            }).then(response => {
-                this.loading = false;
-                this.page++;
-                if (response.data.code == 1) {
-                    this.list = [...this.list, ...response.data.data];
-                } else {
-                    this.noMore = true;
-                }
-            });
-        },
-        getADList(value) {
-            return this.$http.post('http://apicenter.toysmodel.cn/api/5e241452c81d2', {
-                area_id: 1,
-                page: 1,
-                pagesize: 20,
-                search: '好孩子'
-            }).then(resolve => resolve);
-        },
-        // 按分类获取列表
-        getList(type) {
-            if (type) {
-                this.type = type;
-                this.noMore = false;
-                this.list = [];
-                this.page = 1;
-            }
-            this.loading = true;
-            this.$http.post('http://apicenter.toysmodel.cn/api/5e241452c81d2', {
-                area_id: 1,
-                page: this.page,
-                pagesize: 20,
-                type: this.type
-            }).then(response => {
-                this.loading = false;
-                console.log(response);
-                if (response.data.code == 1) {
-                    // 将adList只放在推荐栏目首位
-                    this.list = [...(this.page == 1 && this.type == 1 ? this.adList : []), ...this.list, ...response.data.data];
-                }
-                console.log(this.list);
-                this.page++;
-            });
-        },
-        // 懒加载
-        loadMore() {
-            if (this.type === null) {
-                this.searchList();
-            } else {
-                this.getList();
-            }
-        }
+  name: 'List',
+  components: {
+    toyDetailDialog,
+    toyPicDialog
+  },
+  data () {
+    return {
+      adList: [],
+      typeList: [
+        { name: '推荐', value: 1 },
+        { name: '新款', value: 2 },
+        { name: '版权', value: 3 },
+        { name: '品牌', value: 4 },
+        { name: '全部', value: 5 }
+      ],
+      type: 1,
+      page: 1,
+      size: 20,
+      list: [],
+      imgUrl: imgUrl,
+      baseUrl: baseUrl,
+      span: 12,
+      loading: true,
+      noMore: false,
+      info: {},
+      toyDetailDialogVisible: false,
+      toyPicDialogVisible: false,
+      QueryString: ''
     }
-};
+  },
+  async created () {
+    const adResult = await this.getADList()
+    this.adList = adResult.data.data
+    console.log(this.adList)
+    await this.getList(1)
+  },
+  mounted () {
+    this.initPic()
+  },
+  computed: {
+    disabled () {
+      return this.loading || this.noMore
+    }
+  },
+  methods: {
+    // 搜索框搜索
+    search () {
+      this.noMore = false
+      this.type = null
+      this.page = 1
+      this.list = []
+      this.searchList()
+    },
+    // 展示详情
+    showInfo (item) {
+      this.info = item
+      this.$refs['toyDetailDialog'].dialogVisible = true
+      this.$refs['toyDetailDialog'].ToySn = item.ToySn
+      this.$refs['toyDetailDialog'].searchPic()
+    },
+    // 初始化排版
+    initPic () {
+      const bodyWidth = document.body.clientWidth
+      if (bodyWidth <= 300) {
+        this.span = 24
+      } else if (bodyWidth <= 600) {
+        this.span = 12
+      } else if (bodyWidth <= 830) {
+        this.span = 8
+      } else if (bodyWidth <= 830) {
+        this.span = 8
+      } else if (bodyWidth <= 1200) {
+        this.span = 6
+      } else {
+        this.span = 6
+      }
+    },
+    // http://api.toysmodel.cn/toyN1.php?function=PicQuerySumDB&v1=+and+((AreaID%3D1)+or+(AreaID%3D3))+and+(PID%3D0)+and+(CONCAT(PName%2CTag%2CToySn%2CSName)+like+'%25%25')+and+(CONCAT(PName%2CTag%2CToySn%2CSName)+like+'%251605254002%25')+Order+by+ID+desc++LIMIT+0%2C21
+    // http://api.toysmodel.cn/toyN1.php?function=PicQueryDB&v1=+and+((PID=380394)+or+(ID=380394))+Order+by+ID+DESC+LIMIT+30,31
+    // 搜索列表
+    searchList (value) {
+      this.loading = true
+      this.$http.post('http://apicenter.toysmodel.cn/api/5e241452c81d2', {
+        area_id: 1,
+        page: this.page,
+        pagesize: 20,
+        search: value || this.QueryString
+      }).then(response => {
+        this.loading = false
+        this.page++
+        if (response.data.code === 1) {
+          this.list = [...this.list, ...response.data.data]
+        } else {
+          this.noMore = true
+        }
+      })
+    },
+    getADList (value) {
+      return this.$http.post('http://apicenter.toysmodel.cn/api/5e241452c81d2', {
+        area_id: 1,
+        page: 1,
+        pagesize: 20,
+        search: '好孩子'
+      }).then(resolve => resolve)
+    },
+    // 按分类获取列表
+    getList (type) {
+      if (type) {
+        this.type = type
+        this.noMore = false
+        this.list = []
+        this.page = 1
+      }
+      this.loading = true
+      this.$http.post('http://apicenter.toysmodel.cn/api/5e241452c81d2', {
+        area_id: 1,
+        page: this.page,
+        pagesize: 20,
+        type: this.type
+      }).then(response => {
+        this.loading = false
+        console.log(response)
+        if (response.data.code === 1) {
+          // 将adList只放在推荐栏目首位
+          this.list = [...(this.page === 1 && this.type === 1 ? this.adList : []), ...this.list, ...response.data.data]
+        }
+        console.log(this.list)
+        this.page++
+      })
+    },
+    // 懒加载
+    loadMore () {
+      if (this.type === null) {
+        this.searchList()
+      } else {
+        this.getList()
+      }
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
